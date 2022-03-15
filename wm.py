@@ -15,8 +15,8 @@ class WindowManager():
             
         self._i3 = Connection(auto_reconnect=True)
         
-        self._i3.on(Event.WINDOW_NEW, self._create_on_window_new)
-        self._i3.on(Event.WINDOW_CLOSE, self._create_on_window_close)
+        self._i3.on(Event.WINDOW_NEW, self._create_on_window_new())
+        self._i3.on(Event.WINDOW_CLOSE, self._create_on_window_close())
         
         self._thread = Thread(target=self._i3.main)
         self._thread.start()
@@ -33,14 +33,14 @@ class WindowManager():
     def remove_window(self, id):
         self._lock.acquire()
         try:
-            self._windows = filter(lambda window: window['id'] != id, self._windows)
+            self._windows = list(filter(lambda window: window['id'] != id, self._windows))
         finally:
             self._lock.release()
 
-    def add_window(self, con):
+    def add_window(self, id, name):
         self._lock.acquire()
         try:
-            self._windows = [{'id': con['id'], 'name': con['name']}] + self._windows
+            self._windows = [{'id': id, 'name': name}] + self._windows
         finally:
             self._lock.release()
 
@@ -52,7 +52,7 @@ class WindowManager():
             if len(window) == 0:
                 return
             
-            self._windows = chain(window, filter(lambda window: window['id'] != id, self._windows))
+            self._windows = window + list(filter(lambda window: window['id'] != id, self._windows))
         finally:
             self._lock.release()
             
@@ -66,14 +66,14 @@ class WindowManager():
         finally:
             self._lock.release()
 
-    def _create_on_window_new(self, e):
+    def _create_on_window_new(self):
         def closure(connection, e):
-            self.add_window(e.container)
+            self.add_window(e.container.id, e.container.name)
         
         return closure
 
-    def _create_on_window_close(self, e):
+    def _create_on_window_close(self):
         def closure(connection, e):
-            self.remove_window(e.container)
+            self.remove_window(e.container.id)
         
         return closure

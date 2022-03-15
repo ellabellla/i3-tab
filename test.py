@@ -5,9 +5,9 @@ class WMTest(unittest.TestCase):
     def test_add_window(self):
         window_manager = wm.WindowManager(testing=True)
         
-        window_manager.add_window({'id':'1', 'name':'first'})
-        window_manager.add_window({'id':'2', 'name':'second'})
-        window_manager.add_window({'id':'3', 'name':'third'})
+        window_manager.add_window('1', 'first')
+        window_manager.add_window('2', 'second')
+        window_manager.add_window('3', 'third')
         
         self.assertEqual([{'id':'3', 'name':'third'}, {'id':'2', 'name':'second'},{'id':'1', 'name':'first'}], list(window_manager._windows))
     
@@ -39,13 +39,13 @@ class WMTest(unittest.TestCase):
     def test_front(self):
         window_manager = wm.WindowManager(testing=True)
         
-        window_manager.add_window({'id':'1', 'name':'first'})
+        window_manager.add_window('1', 'first')
         self.assertEqual({'id':'1', 'name':'first'}, window_manager.front())
         
-        window_manager.add_window({'id':'2', 'name':'second'})
+        window_manager.add_window('2', 'second')
         self.assertEqual({'id':'2', 'name':'second'}, window_manager.front())
         
-        window_manager.add_window({'id':'3', 'name':'third'})
+        window_manager.add_window('3', 'third')
         self.assertEqual({'id':'3', 'name':'third'}, window_manager.front())
         
 if __name__ == '__main__':
