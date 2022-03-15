@@ -65,6 +65,10 @@ class WindowManager():
             self._windows = [self._windows[1]] + [self._windows[0]] + self._windows[2:]
         finally:
             self._lock.release()
+    
+    def exit(self):
+        self._i3.main_quit()
+        self._thread.join()
 
     def _create_on_window_new(self):
         def closure(connection, e):
