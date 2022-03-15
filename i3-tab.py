@@ -1,9 +1,9 @@
-import gui
-import wm
+from gui import Launcher
+from wm import WindowManager
 
 def main():
-    gui.run()
-    wm.run()
+    window_manager = WindowManager()
+    Launcher(window_manager)
 
 if __name__ == '__main__':
     main()
