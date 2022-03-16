@@ -1,3 +1,4 @@
+from math import floor
 import PySimpleGUI as sg
 from pynput import keyboard
 
@@ -6,9 +7,9 @@ class Launcher():
         self._queue = []
         self._window_manager = window_manager
 
-        layout = [[sg.Text('hello', key='body')]]      
+        layout = [[sg.Text('', key=str(i), background_color='black', size=(20,10)) for i in range(0,10)]]      
 
-        self._window = sg.Window("", layout, no_titlebar=True)
+        self._window = sg.Window("i3-tab", layout, background_color='black')
         
         self._selected = 0
         
@@ -32,7 +33,17 @@ class Launcher():
                 self._close()
                 break
             else:
-                self._window['body'].update(' | '.join([f'_{name}_' if self._selected == i else name for i, (_, name) in enumerate(self._window_list)]))
+                for i in range(0,10):
+                    index = i
+                    
+                    index += floor(self._selected / 10) * 10
+                    print(index)
+                        
+                    if index >= len(self._window_list):
+                        self._window[str(i)].update('')
+                        continue
+                    
+                    self._window[str(i)].update(f'_{self._window_list[index][1]}_' if self._selected == index else self._window_list[index][1])
     
     def _create_on_key_press(self):
         def _on_key_press(key):
