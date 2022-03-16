@@ -7,7 +7,7 @@ class Launcher():
         self._queue = []
         self._window_manager = window_manager
 
-        layout = [[sg.Text('', key=str(i), background_color='black', size=(20,10)) for i in range(0,10)]]      
+        layout = [[sg.Text('', key=str(i), background_color='black', size=(20,2), font=('Any', 10, '')) for i in range(0,10)]]      
 
         self._window = sg.Window("i3-tab", layout, background_color='black')
         
@@ -18,6 +18,7 @@ class Launcher():
             on_release=self._create_on_key_release())
         
         self._alt_down = False
+        self._shift_down = False
         self._hidden = True
         
         self._window_list = [];
@@ -35,15 +36,13 @@ class Launcher():
             else:
                 for i in range(0,10):
                     index = i
-                    
                     index += floor(self._selected / 10) * 10
-                    print(index)
                         
                     if index >= len(self._window_list):
                         self._window[str(i)].update('')
                         continue
                     
-                    self._window[str(i)].update(f'_{self._window_list[index][1]}_' if self._selected == index else self._window_list[index][1])
+                    self._window[str(i)].update(self._window_list[index][1], font=(('Any', 10, 'bold') if self._selected == index else ('Any', 10, '')))
     
     def _create_on_key_press(self):
         def _on_key_press(key):
@@ -56,12 +55,16 @@ class Launcher():
                         
                         self._window.un_hide()
                         self._window.TKroot.focus_force()
-                
-                    self._selected += 1
+                    
+                    self._selected += 1    
                     if self._selected >= len(self._window_list):
                         self._selected = 0
                 elif key.name == 'alt':
                     self._alt_down = True
+                elif self._alt_down and key.name == 'shift':
+                    self._selected -= 1
+                    if self._selected < 0:
+                        self._selected = len(self._window_list) - 1
                 
             except AttributeError:
                 pass
@@ -78,6 +81,8 @@ class Launcher():
                         self._window.hide()
                         self._window_manager.cmd(f'[con_id="{self._window_list[self._selected][0]}"] focus')
                         self._selected = 0
+                if key.name == 'shift':
+                    self._shift_down = False
             except AttributeError:
                 pass
         
