@@ -3,18 +3,21 @@ import PySimpleGUI as sg
 from pynput import keyboard
 
 class Launcher():
-    def __init__(self, window_manager):
+    def __init__(self, window_manager, config):
         """Alt Tab Menu GUI. Handles all keyboard interactions and gui.
 
         Args:
             window_manager (WindowManager): i3 WindowManager
         """
         self._queue = []
+        self._config = config
         self._window_manager = window_manager
 
-        layout = [[sg.Text('', key=str(i), background_color='black', size=(20,2), font=('Any', 10, '')) for i in range(0,10)]]      
+        layout = [[sg.Text('', key=str(i), text_color=config['window']['color'], background_color=config['window']['bcolor'], 
+                           size=(config['selection']['width'], config['selection']['height']), 
+                           font=config['font']['unselected']) for i in range(0,self._config['window'].getint('width'))]]      
 
-        self._window = sg.Window("i3-tab", layout, background_color='black')
+        self._window = sg.Window("i3-tab", layout, background_color=config['window']['bcolor'])
         
         self._selected = 0
         
@@ -41,15 +44,16 @@ class Launcher():
                 self._close()
                 break
             else:
-                for i in range(0,10):
+                for i in range(0,self._config['window'].getint('width')):
                     index = i
-                    index += floor(self._selected / 10) * 10
+                    index += floor(self._selected / self._config['window'].getint('width')) * self._config['window'].getint('width')
                         
                     if index >= len(self._window_list):
                         self._window[str(i)].update('')
                         continue
                     
-                    self._window[str(i)].update(self._window_list[index][1], font=(('Any', 10, 'bold') if self._selected == index else ('Any', 10, '')))
+                    self._window[str(i)].update(self._window_list[index][1], 
+                                                font=(self._config['font']['selected'] if self._selected == index else self._config['font']['unselected']))
     
     def _create_on_key_press(self):
         """Create on key press event handler

@@ -9,6 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "i3-tab.py",
+            "args": ["./config/config.ini"],
             "console": "integratedTerminal",
             "justMyCode": true
         }
