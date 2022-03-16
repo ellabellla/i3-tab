@@ -66,6 +66,10 @@ class WindowManager():
         finally:
             self._lock.release()
     
+    def cmd(self, cmd):
+        tmp =self._i3.command(cmd)
+        print()
+        
     def exit(self):
         self._i3.main_quit()
         self._thread.join()
