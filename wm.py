@@ -78,6 +78,8 @@ class WindowManager():
             con = cons[0]
             cons = cons[1:]
             self._windows.append({'id': con.id, 'name': con.name})
+        
+        self.move_to_front(self._i3.get_tree().find_focused().id)
     
     def reload_names(self):
         self._windows = [{'id': window['id'], 'name': self._i3.get_tree().find_by_id(window['id']).name} for window in self._windows] 
