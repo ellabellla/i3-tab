@@ -70,9 +70,17 @@ class WindowManager():
     def cmd(self, cmd):
         tmp =self._i3.command(cmd)
         print()
-        
+    
+    def reload(self):
+        self._windows = []
+        cons = self._i3.get_tree().leaves()
+        while len(cons) != 0:
+            con = cons[0]
+            cons = cons[1:]
+            self._windows.append({'id': con.id, 'name': con.name})
+    
     def reload_names(self):
-        self._windows = [{'id': window['id'], 'name': self._i3.get_tree().find_by_id(window['id']).name} for window in self._windows]
+        self._windows = [{'id': window['id'], 'name': self._i3.get_tree().find_by_id(window['id']).name} for window in self._windows] 
 
     def exit(self):
         self._i3.main_quit()
