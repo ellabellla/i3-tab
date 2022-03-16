@@ -58,7 +58,13 @@ class WindowManager():
         """
         self._lock.acquire()
         try:
-            self._windows = [{'id': id, 'name': name}] + self._windows
+            
+            found = False
+            for window in self._windows:
+                if window['id'] == id:
+                    found = True
+            if not found:
+                self._windows = [{'id': id, 'name': name}] + self._windows
         finally:
             self._lock.release()
 
@@ -99,27 +105,30 @@ class WindowManager():
         """
         tmp =self._i3.command(cmd)
     
-    def refresh(self) -> None:
-        """Refresh list by removing duplication errors.
-        """
-        self._windows = [window for i, window in enumerate(self._windows) if window not in self._windows[:i]]
-    
     def reload(self) -> None:
         """Reload all window data
         """
-        self._windows = []
-        cons = self._i3.get_tree().leaves()
-        while len(cons) != 0:
-            con = cons[0]
-            cons = cons[1:]
-            self._windows.append({'id': con.id, 'name': con.name})
-        
+        self._lock.acquire()
+        try:
+            self._windows = []
+            cons = self._i3.get_tree().leaves()
+            while len(cons) != 0:
+                con = cons[0]
+                cons = cons[1:]
+                self._windows.append({'id': con.id, 'name': con.name})
+        finally:
+            self._lock.release()
+            
         self.move_to_front(self._i3.get_tree().find_focused().id)
     
     def reload_names(self)  -> None:
         """Reload the names of the windows in the window list
         """
-        self._windows = [{'id': window['id'], 'name': self._i3.get_tree().find_by_id(window['id']).name} for window in self._windows] 
+        self._lock.acquire()
+        try:
+            self._windows = [{'id': window['id'], 'name': self._i3.get_tree().find_by_id(window['id']).name} for window in self._windows] 
+        finally:
+            self._lock.release()
 
     def exit(self) -> None:
         """Exit i3 loop and close thread.

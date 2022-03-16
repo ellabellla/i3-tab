@@ -39,15 +39,9 @@ class Launcher():
         event, values = self._window.read(timeout=100) 
         self._window.hide()
         self._window_manager.reload()
-        refresh = 0
         while True:
             event, values = self._window.read(timeout=100) 
             
-            refresh += 1
-            if refresh >= 100:
-                self._window_manager.refresh()
-                refresh = 0
-                
             if event == sg.WIN_CLOSED or event == 'Exit':
                 self._close()
                 break
