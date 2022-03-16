@@ -99,6 +99,11 @@ class WindowManager():
         """
         tmp =self._i3.command(cmd)
     
+    def refresh(self) -> None:
+        """Refresh list by removing duplication errors.
+        """
+        self._windows = [window for i, window in enumerate(self._windows) if window not in self._windows[:i]]
+    
     def reload(self) -> None:
         """Reload all window data
         """

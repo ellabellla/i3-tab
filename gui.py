@@ -45,7 +45,7 @@ class Launcher():
             
             refresh += 1
             if refresh >= 100:
-                self._window_manager.reload()
+                self._window_manager.refresh()
                 refresh = 0
                 
             if event == sg.WIN_CLOSED or event == 'Exit':
