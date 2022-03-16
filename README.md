@@ -42,6 +42,7 @@ exec path-to-i3-tab/i3-tab.py path-to-config/config.ini
 ## Dependencies
 ### General
 - i3
+- python
 ### Python
 - i3ipc
 - PySimpleGUI
