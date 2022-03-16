@@ -22,7 +22,13 @@ A config file must be specified as a command line argument. A default config fil
     - e.g. "Any 10 bold" or "Helvetic 10 bold italic"
 
 ## Installation
-Run the commands:
+First clone the repository:
+
+```
+git clone https://github.com/ellabellla/i3-tab.git
+```
+
+Then run the commands:
 
 ```
 pip install i3ipc
