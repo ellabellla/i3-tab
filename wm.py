@@ -1,9 +1,13 @@
 from i3ipc import Connection, Event
 from threading import Lock, Thread
-from itertools import chain
 
 class WindowManager():
     def __init__(self, testing=False):
+        """Manages the state changes of i3 and keeps a list of open in windows. Switching focus will shift windows the front of the list.
+
+        Args:
+            testing (bool, optional): Disable the connection to i3 for testing. Defaults to False.
+        """
         self._windows = []
         self._lock = Lock()
         
@@ -22,7 +26,9 @@ class WindowManager():
         self._thread = Thread(target=self._i3.main)
         self._thread.start()
 
-    def front(self):            
+    def front(self) -> dict:
+        """Get the front of the window list.
+        """         
         self._lock.acquire()
         front = None
         try:
@@ -31,21 +37,37 @@ class WindowManager():
             self._lock.release()
             return front
 
-    def remove_window(self, id):
+    def remove_window(self, id) -> None:
+        """Remove window by id
+
+        Args:
+            id (string): id of window
+        """
         self._lock.acquire()
         try:
             self._windows = list(filter(lambda window: window['id'] != id, self._windows))
         finally:
             self._lock.release()
 
-    def add_window(self, id, name):
+    def add_window(self, id, name) -> None:
+        """Add a window to the window list.
+
+        Args:
+            id (string): id of the window
+            name (string): name of the window
+        """
         self._lock.acquire()
         try:
             self._windows = [{'id': id, 'name': name}] + self._windows
         finally:
             self._lock.release()
 
-    def move_to_front(self, id):
+    def move_to_front(self, id) -> None:
+        """Move window with id to the front of the list.
+
+        Args:
+            id (string): id of the window
+        """
         self._lock.acquire()
         try:
             window  = list(filter(lambda window: window['id'] == id, self._windows))
@@ -57,7 +79,9 @@ class WindowManager():
         finally:
             self._lock.release()
             
-    def flip(self):
+    def flip(self) -> None:
+        """Flip the order of the first two windows in the list
+        """
         if len(self._windows) < 2:
             return    
         
@@ -67,11 +91,17 @@ class WindowManager():
         finally:
             self._lock.release()
     
-    def cmd(self, cmd):
+    def cmd(self, cmd) -> None:
+        """Run i3 command
+
+        Args:
+            cmd (string): i3 command
+        """
         tmp =self._i3.command(cmd)
-        print()
     
-    def reload(self):
+    def reload(self) -> None:
+        """Reload all window data
+        """
         self._windows = []
         cons = self._i3.get_tree().leaves()
         while len(cons) != 0:
@@ -81,26 +111,36 @@ class WindowManager():
         
         self.move_to_front(self._i3.get_tree().find_focused().id)
     
-    def reload_names(self):
+    def reload_names(self)  -> None:
+        """Reload the names of the windows in the window list
+        """
         self._windows = [{'id': window['id'], 'name': self._i3.get_tree().find_by_id(window['id']).name} for window in self._windows] 
 
-    def exit(self):
+    def exit(self) -> None:
+        """Exit i3 loop and close thread.
+        """
         self._i3.main_quit()
         self._thread.join()
         
     def _create_on_window_focus(self):
+        """Create on window focus event handler
+        """
         def closure(connection, e):
             self.move_to_front(e.container.id)
         
         return closure
     
     def _create_on_window_new(self):
+        """Create on window new event handler
+        """
         def closure(connection, e):
             self.add_window(e.container.id, e.container.name)
         
         return closure
 
     def _create_on_window_close(self):
+        """Create on window close event handler
+        """
         def closure(connection, e):
             self.remove_window(e.container.id)
         

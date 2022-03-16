@@ -4,6 +4,11 @@ from pynput import keyboard
 
 class Launcher():
     def __init__(self, window_manager):
+        """Alt Tab Menu GUI. Handles all keyboard interactions and gui.
+
+        Args:
+            window_manager (WindowManager): i3 WindowManager
+        """
         self._queue = []
         self._window_manager = window_manager
 
@@ -25,7 +30,9 @@ class Launcher():
         
         self._listener.start()
 
-    def main(self):
+    def main(self) -> None:
+        """Start main gui loop.
+        """
         event, values = self._window.read(timeout=100) 
         self._window.hide()
         while True:
@@ -45,6 +52,8 @@ class Launcher():
                     self._window[str(i)].update(self._window_list[index][1], font=(('Any', 10, 'bold') if self._selected == index else ('Any', 10, '')))
     
     def _create_on_key_press(self):
+        """Create on key press event handler
+        """
         def _on_key_press(key):
             try:
                 if self._alt_down and key.name == 'tab':
@@ -72,6 +81,8 @@ class Launcher():
         return _on_key_press
     
     def _create_on_key_release(self):
+        """Create on key release event handler
+        """
         def _on_key_release(key):
             try:
                 if key.name == 'alt':
@@ -89,9 +100,7 @@ class Launcher():
         return _on_key_release
     
     def _close(self):
+        """Exit window manager and close Gui.
+        """
         self._window_manager.exit()
         self._window.close()
-    
-if __name__ == '__main__':
-    launcher = Launcher() 
-    launcher.main()
