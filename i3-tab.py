@@ -15,7 +15,6 @@ def main():
         return
     
     window_manager = WindowManager()
-    window_manager.reload()
     Launcher(window_manager, config).main()
 
 if __name__ == '__main__':
