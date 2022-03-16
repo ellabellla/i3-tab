@@ -32,7 +32,6 @@ class Launcher():
                 self._close()
                 break
             else:
-                self._window_list = [ (window['id'], window['name']) for window in filter(lambda window: window['name'] != None, self._window_manager._windows)]
                 self._window['body'].update(' | '.join([f'_{name}_' if self._selected == i else name for i, (_, name) in enumerate(self._window_list)]))
     
     def _create_on_key_press(self):
@@ -41,12 +40,15 @@ class Launcher():
                 if self._alt_down and key.name == 'tab':
                     if self._hidden:
                         self._hidden = False
+                        self._window_manager.reload_names()
+                        self._window_list = [ (window['id'], window['name']) for window in filter(lambda window: window['name'] != None, self._window_manager._windows)]
+                        
                         self._window.un_hide()
                         self._window.TKroot.focus_force()
-                    else:
-                        self._selected += 1
-                        if self._selected >= len(self._window_list):
-                            self._selected = 0
+                
+                    self._selected += 1
+                    if self._selected >= len(self._window_list):
+                        self._selected = 0
                 elif key.name == 'alt':
                     self._alt_down = True
                 

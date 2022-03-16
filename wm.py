@@ -15,6 +15,7 @@ class WindowManager():
             
         self._i3 = Connection(auto_reconnect=True)
         
+        self._i3.on(Event.WINDOW_FOCUS, self._create_on_window_focus())
         self._i3.on(Event.WINDOW_NEW, self._create_on_window_new())
         self._i3.on(Event.WINDOW_CLOSE, self._create_on_window_close())
         
@@ -70,10 +71,19 @@ class WindowManager():
         tmp =self._i3.command(cmd)
         print()
         
+    def reload_names(self):
+        self._windows = [{'id': window['id'], 'name': self._i3.get_tree().find_by_id(window['id']).name} for window in self._windows]
+
     def exit(self):
         self._i3.main_quit()
         self._thread.join()
-
+        
+    def _create_on_window_focus(self):
+        def closure(connection, e):
+            self.move_to_front(e.container.id)
+        
+        return closure
+    
     def _create_on_window_new(self):
         def closure(connection, e):
             self.add_window(e.container.id, e.container.name)
