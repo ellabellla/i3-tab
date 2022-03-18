@@ -43,7 +43,7 @@ Then add the following lines to your i3 config:
 set $alt Mod1
 
 for_window [class="i3-tab"] floating enable sticky enable border none move position center 
-bindsym $alt+Tab [class="i3-tab"] focus
+bindsym $alt+Tab [class="i3-tab"] fullscreen disable
 exec path-to-i3-tab/i3-tab.py path-to-config/config.ini
 ```
 
