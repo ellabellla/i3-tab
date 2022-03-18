@@ -40,8 +40,10 @@ chmod +x path-to-i3-tab/i3-tab.py
 
 Then add the following lines to your i3 config:
 ```
-for_window [class="i3-tab"] floating enable sticky enable border none move position center 
+set $alt Mod1
 
+for_window [class="i3-tab"] floating enable sticky enable border none move position center 
+bindsym $alt+Tab [class="i3-tab"] focus
 exec path-to-i3-tab/i3-tab.py path-to-config/config.ini
 ```
 
