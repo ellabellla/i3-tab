@@ -68,6 +68,7 @@ class Launcher():
                         self._window_manager.reload_names()
                         self._window_list = [ (window['id'], window['name']) for window in filter(lambda window: window['name'] != None, self._window_manager._windows)]
                         
+                        self._window_manager.cmd('fullscreen disable')
                         self._window.un_hide()
                         self._window.TKroot.focus_force()
                     
