@@ -1,3 +1,4 @@
+from xmlrpc.client import Boolean
 from i3ipc import Connection, Event
 from threading import Lock, Thread
 
@@ -129,6 +130,34 @@ class WindowManager():
             self._windows = [{'id': window['id'], 'name': self._i3.get_tree().find_by_id(window['id']).name} for window in self._windows] 
         finally:
             self._lock.release()
+            
+    def is_floating(self, id) -> Boolean:
+        """Check if a window is floating
+
+        Args:
+            id (int): id of window to check
+
+        Returns:
+            Boolean: true if window is floating
+        """
+        con = self._i3.get_tree().find_by_id(id)
+        if con == None:
+            return False
+        else:
+            return con.floating == 'auto_on' or con.floating == 'user_on'
+    
+    def in_same_workspace(self, id1, id2):
+        con1 = self._i3.get_tree().find_by_id(id1)
+        con2 = self._i3.get_tree().find_by_id(id2)
+        if con1 == None or con2 == None:
+             return False
+        else:
+            workspace1 = con1.workspace()
+            workspace2 = con2.workspace()
+            if workspace1 == None or workspace2 == None:
+                return False
+            else:
+                return workspace1.id == workspace2.id
 
     def exit(self) -> None:
         """Exit i3 loop and close thread.

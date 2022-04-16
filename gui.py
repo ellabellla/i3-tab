@@ -97,6 +97,8 @@ class Launcher():
                     if not self._hidden:
                         self._hidden = True
                         self._window.hide()
+                        if self._window_manager.is_floating(self._window_list[0][0]):
+                            self._window_manager.cmd(f'[con_id="{self._window_list[0][0]}"] move scratchpad')
                         self._window_manager.cmd(f'[con_id="{self._window_list[self._selected][0]}"] focus')
                         self._selected = 0
                 if key.name == 'shift':
