@@ -1,8 +1,6 @@
 # I3 Tab
 Adds simple alt tab functionality to i3.
 
-Written by Ella Pash
-
 ## Usage
 Press `alt+tab` to switch to the last window in focus. Continue holding `tab` to keep the menu up. Whilst in the menu press `shift` to move the selection backwards and `tab` to move the selection forwards. The selected window will be in bold.
 
